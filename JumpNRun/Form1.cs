@@ -79,15 +79,7 @@ namespace Dodger
         }
 
         private void timer1_Tick(object sender, EventArgs e)
-        {
-            //pictureBoxes.Add(createPictureBox());
-
-            //foreach (var item in pictureBoxes)
-            //{
-            //    item.Location = new Point(40, item.Location.Y + 5);
-            //}
-
-            
+        {            
             pictureBoxes[0].Location = new Point(pictureBoxes[0].Location.X, pictureBoxes[0].Location.Y + 5);
 
             foreach (var picturebox in pictureBoxes)
