@@ -17,11 +17,10 @@ namespace Dodger
         {
             InitializeComponent();
 
-            createPictureBox();
-            
+            createPictureBoxShots();
         }
 
-        List<PictureBox> pictureBoxes = new List<PictureBox>();
+        List<PictureBox> shots = new List<PictureBox>();
         List<Color> colors = new List<Color>()
             {
                 Color.Red,
@@ -30,40 +29,43 @@ namespace Dodger
                 Color.Green,
                 Color.Blue,
                 Color.Indigo,
-                Color.Violet
+                Color.Violet,
+                Color.Cyan,
+                Color.Magenta,
+                Color.White,
+                Color.Black,
+                Color.Gray,
+                Color.Tan,
+                Color.Brown
             };
+
         private int counter = 0;
+        private int moveIncrement = 15;
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            
             switch (e.KeyChar)
             {
                 case 'a':
-
-                    if (pbRunner.Location.X + pbRunner.Width < 0)
-                    {
-                        pbRunner.Location = new Point(Width - pbRunner.Width, pbRunner.Location.Y);
-                    }
-                    else
-                    {
-                        pbRunner.Location = new Point(pbRunner.Location.X - 15, pbRunner.Location.Y);
-                    }
-
+                case 'A':
+                    moveLeft();
                     break;
-
                 case 'd':
-
-                    if (pbRunner.Location.X > Width)
-                    {
-                        pbRunner.Location = new Point(0, pbRunner.Location.Y);
-                    }
-                    else
-                    {
-                        pbRunner.Location = new Point(pbRunner.Location.X + 15, pbRunner.Location.Y);
-                    }
-                                        
+                case 'D':
+                    moveRight();
                     break;
+
+                    //case (char)(Keys.Left + 32):
+
+                    //    moveLeft();
+
+                    //    break;
+
+                    //case (char)(Keys.Right + 32):
+
+                    //    moveRight();
+
+                    //    break;
 
                     //case 'w':
                     //    pbRunner.Location = new Point(pbRunner.Location.X, pbRunner.Location.Y - 15);
@@ -71,18 +73,19 @@ namespace Dodger
                     //case 's':
                     //    pbRunner.Location = new Point(pbRunner.Location.X, pbRunner.Location.Y + 15);
                     //    break;
-
             }
-
-            
-
         }
 
+        /// <summary>
+        /// If the timer ticks the shots should be moved and if a shot hits the runner, the game is over
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
-        {            
-            pictureBoxes[0].Location = new Point(pictureBoxes[0].Location.X, pictureBoxes[0].Location.Y + 5);
+        {
+            shots[0].Location = new Point(shots[0].Location.X, shots[0].Location.Y + 5);
 
-            foreach (var picturebox in pictureBoxes)
+            foreach (var picturebox in shots)
             {
                 if (picturebox.Bounds.IntersectsWith(pbRunner.Bounds))
                 {
@@ -101,15 +104,18 @@ namespace Dodger
                 }
             }
 
-            if (pictureBoxes[0].Location.Y > Height)
+            if (shots[0].Location.Y > Height)
             {
-                this.Controls.Remove(pictureBoxes[0]);
-                pictureBoxes.RemoveAt(0);
-                createPictureBox();
+                this.Controls.Remove(shots[0]);
+                shots.RemoveAt(0);
+                createPictureBoxShots();
             }
         }
 
-        public PictureBox createPictureBox()
+        /// <summary>
+        /// Creates the red picterboxes to dogde
+        /// </summary>
+        public void createPictureBoxShots()
         {
             Random random = new Random();
             int randX = random.Next(0, Width);
@@ -119,7 +125,7 @@ namespace Dodger
             pictureBox.BackColor = Color.Red;
 
             counter++;
-            if (counter == 5)
+            if (counter == 5) // every fifth shot appears exactly over the runner
             {
                 int xPos = pbRunner.Location.X + (pbRunner.Width / 2);
                 pictureBox.Location = new Point(xPos, 0);
@@ -129,11 +135,33 @@ namespace Dodger
             {
                 pictureBox.Location = new Point(randX, 0);
             }
-            
-            pictureBoxes.Add(pictureBox);
-            this.Controls.Add(pictureBox);
 
-            return pictureBox;
+            shots.Add(pictureBox);
+            this.Controls.Add(pictureBox);
+        }
+
+        public void moveLeft()
+        {
+            if (pbRunner.Location.X + pbRunner.Width < 0)
+            {
+                pbRunner.Location = new Point(Width - pbRunner.Width, pbRunner.Location.Y);
+            }
+            else
+            {
+                pbRunner.Location = new Point(pbRunner.Location.X - moveIncrement, pbRunner.Location.Y);
+            }
+        }
+
+        public void moveRight()
+        {
+            if (pbRunner.Location.X > Width)
+            {
+                pbRunner.Location = new Point(0, pbRunner.Location.Y);
+            }
+            else
+            {
+                pbRunner.Location = new Point(pbRunner.Location.X + moveIncrement, pbRunner.Location.Y);
+            }
         }
 
         private void timer2_Tick(object sender, EventArgs e)
@@ -142,7 +170,6 @@ namespace Dodger
             int newRand = rand.Next(colors.Count);
 
             pbRunner.BackColor = colors[newRand];
-
         }
     }
 }
